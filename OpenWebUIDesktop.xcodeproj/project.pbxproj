@@ -10,9 +10,22 @@
 		43233E8E2F1BCE3200CB817A /* OpenWebUIDesktop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenWebUIDesktop.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		436F56B52F1BE86C00C1C1A6 /* Exceptions for "OpenWebUIDesktop" folder in "OpenWebUIDesktop" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 43233E8D2F1BCE3200CB817A /* OpenWebUIDesktop */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		43233E902F1BCE3200CB817A /* OpenWebUIDesktop */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				436F56B52F1BE86C00C1C1A6 /* Exceptions for "OpenWebUIDesktop" folder in "OpenWebUIDesktop" target */,
+			);
 			path = OpenWebUIDesktop;
 			sourceTree = "<group>";
 		};
