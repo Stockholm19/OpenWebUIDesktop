@@ -1,6 +1,7 @@
 import SwiftUI
 import Combine
 
+@MainActor
 class WebViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var progress: Double = 0.0
@@ -57,8 +58,13 @@ class WebViewModel: ObservableObject {
     
     private func updateURL() {
         let string = isLocalMode ? localURLString : externalURLString
-        if let url = URL(string: string.trimmingCharacters(in: .whitespacesAndNewlines)) {
-            currentURL = url
+        let trimmed = string.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let url = URL(string: trimmed) else { return }
+
+        // Avoid publishing changes while SwiftUI is in the middle of a view update.
+        // (This can happen when the value change originates from a Binding update.)
+        DispatchQueue.main.async { [weak self] in
+            self?.currentURL = url
         }
     }
     

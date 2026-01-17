@@ -21,8 +21,8 @@ struct SettingsView: View {
                 
                 Section(header: Text("Startup Preference")) {
                     Picker("Start with", selection: $defaultToLocal) {
-                        Text("External URL").tag(false)
                         Text("Local URL").tag(true)
+                        Text("External URL").tag(false)
                     }
                     .pickerStyle(RadioGroupPickerStyle())
                 }

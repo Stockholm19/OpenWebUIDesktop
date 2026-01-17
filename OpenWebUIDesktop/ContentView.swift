@@ -46,8 +46,8 @@ struct ContentView: View {
                             Image(systemName: "arrow.clockwise")
                         }
                         
-                        Button(action: viewModel.goHome) { 
-                            Image(systemName: "house")
+                        Button(action: viewModel.goHome) {
+                            Image(systemName: "house.fill")
                         }
                         .help("Go to Home")
                     }
@@ -55,8 +55,9 @@ struct ContentView: View {
                     Divider().frame(height: 16)
                     
                     Picker("Mode", selection: $viewModel.isLocalMode) {
+                        // Use a different icon than the Home button to avoid confusion
+                        Label("Local", systemImage: "server.rack").tag(true)
                         Label("External", systemImage: "globe").tag(false)
-                        Label("Local", systemImage: "house").tag(true)
                     }
                     .pickerStyle(SegmentedPickerStyle())
                     .frame(width: 150)
