@@ -7,6 +7,16 @@ class WebViewModel: ObservableObject {
     @Published var canGoBack: Bool = false
     @Published var canGoForward: Bool = false
     @Published var currentURL: URL?
+    @Published var zoomLevel: Double {
+        didSet {
+            UserDefaults.standard.set(zoomLevel, forKey: "zoomLevel")
+        }
+    }
+    @Published var defaultToLocal: Bool {
+        didSet {
+            UserDefaults.standard.set(defaultToLocal, forKey: "defaultToLocal")
+        }
+    }
     @Published var isLocalMode: Bool {
         didSet {
             UserDefaults.standard.set(isLocalMode, forKey: "isLocalMode")
@@ -14,21 +24,42 @@ class WebViewModel: ObservableObject {
         }
     }
     
-    let localURL = URL(string: "http://192.168.3.178:2876/")!
-    let externalURL = URL(string: "https://gelting735.synology.me:2876/")!
+    @Published var localURLString: String {
+        didSet {
+            UserDefaults.standard.set(localURLString, forKey: "localURLString")
+            if isLocalMode { updateURL() }
+        }
+    }
+    
+    @Published var externalURLString: String {
+        didSet {
+            UserDefaults.standard.set(externalURLString, forKey: "externalURLString")
+            if !isLocalMode { updateURL() }
+        }
+    }
     
     // Action trigger for WebView
     @Published var shouldReload: Bool = false
     @Published var shouldGoBack: Bool = false
     @Published var shouldGoForward: Bool = false
+    @Published var shouldGoHome: Bool = false
     
     init() {
-        self.isLocalMode = UserDefaults.standard.object(forKey: "isLocalMode") as? Bool ?? true
+        let launchMode = UserDefaults.standard.object(forKey: "defaultToLocal") as? Bool ?? true
+        self.defaultToLocal = launchMode
+        self.isLocalMode = launchMode
+        self.localURLString = UserDefaults.standard.string(forKey: "localURLString") ?? "http://192.168.x.x:2876/"
+        self.externalURLString = UserDefaults.standard.string(forKey: "externalURLString") ?? "https://your-domain.me:2876/"
+        let zoom = UserDefaults.standard.double(forKey: "zoomLevel")
+        self.zoomLevel = zoom == 0 ? 1.0 : zoom
         updateURL()
     }
     
     private func updateURL() {
-        currentURL = isLocalMode ? localURL : externalURL
+        let string = isLocalMode ? localURLString : externalURLString
+        if let url = URL(string: string.trimmingCharacters(in: .whitespacesAndNewlines)) {
+            currentURL = url
+        }
     }
     
     func reload() {
@@ -49,6 +80,20 @@ class WebViewModel: ObservableObject {
     
     func goHome() {
         updateURL()
-        reload()
+        shouldGoHome = true
+    }
+    
+    func zoomIn() {
+        zoomLevel += 0.1
+    }
+    
+    func zoomOut() {
+        if zoomLevel > 0.3 {
+            zoomLevel -= 0.1
+        }
+    }
+    
+    func resetZoom() {
+        zoomLevel = 1.0
     }
 }

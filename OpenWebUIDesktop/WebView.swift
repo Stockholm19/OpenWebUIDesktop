@@ -45,13 +45,27 @@ struct WebView: NSViewRepresentable {
             }
         }
         
-        // Handle URL change when mode is toggled
-        if let currentURL = nsView.url, let targetURL = viewModel.currentURL, currentURL != targetURL {
-            // Only load if the base domain/port changed significantly (not just navigation within the app)
-            // But for mode toggle, we definitely want to reload the specific target URL
-            if !currentURL.absoluteString.contains(targetURL.host ?? "") {
+        if viewModel.shouldGoHome {
+            if let url = viewModel.currentURL {
+                nsView.load(URLRequest(url: url))
+            }
+            viewModel.shouldGoHome = false
+        }
+        
+        // Handle URL change
+        if let targetURL = viewModel.currentURL {
+            let nsURLString = nsView.url?.absoluteString ?? ""
+            let targetURLString = targetURL.absoluteString
+            
+            // If the base URL host is different, or if we were on a subpage and the target is the base URL
+            if !nsURLString.contains(targetURL.host ?? "") || (targetURLString.count < nsURLString.count && nsURLString.hasPrefix(targetURLString)) {
                  nsView.load(URLRequest(url: targetURL))
             }
+        }
+        
+        // Handle Zoom
+        if nsView.pageZoom != viewModel.zoomLevel {
+            nsView.pageZoom = CGFloat(viewModel.zoomLevel)
         }
     }
     
